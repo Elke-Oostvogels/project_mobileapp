@@ -1,0 +1,7 @@
+{
+  "name": "project_Scheldeoord",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

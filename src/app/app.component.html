@@ -1,3 +1,17 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu #menu side='start' menuId="menu" contentId='main'>
+    <ion-header>
+      <ion-toolbar color='primary'>
+        <ion-title>Schelde Oord</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list lines='full' (click)='menu.close()'>
+        <ion-item [routerLink]="['home']" >Home</ion-item>
+        <ion-item [routerLink]="['animatie']" >Animatie programma</ion-item>
+        <ion-item [routerLink]="['safari']" >Safari</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>

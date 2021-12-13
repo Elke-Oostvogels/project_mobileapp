@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Schelde Safari</ion-title>
+    <ion-buttons slot='start'>
+      <ion-menu-button menuId='menu'></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="container">
+      <h3>Zeehonden spotten op de schelde!</h3>
+      <p>Ook zin in een mooie vaartocht over de Westerschelde, op zoek naar de zeehond? Kijk dan welke data nog beschikbaar zijn en reserveer vandaag nog!</p>
+
+      <h4>Prijzen</h4>
+      <ion-list>
+        <ion-item *ngFor="let info of algInfo">€ {{info.prijs}} p.p {{info.leeftijdscat}}</ion-item>
+      </ion-list>
+      <h2>Reserveren</h2>
+    <ion-item>
+      <ion-label position="stacked">Aantal personen</ion-label>
+      <ion-input type="number"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-button expand="block" (click)="openPicker()">Selecteer een datum</ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label><ion-icon name="time-outline"></ion-icon></ion-label>
+      <ion-datetime displayFormat="H:mm" minuteValues="0" hour-values="10,11,12,14,15,16,17"  placeholder="Selecteer een vertrektijd"></ion-datetime>
+    </ion-item>
+
+    <ion-row>
+      <div class="width-80">
+        <h5>
+          Totaal bedrag
+        </h5>
+      </div>
+
+      <div class="width-20">
+        <p>€5.00</p>
+      </div>
+    </ion-row>
+<ion-button expand="block" strong="true">
+  Reserveren
+</ion-button>
+  </div>
+</ion-content>

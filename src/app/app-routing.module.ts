@@ -11,6 +11,22 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'animatie',
+    loadChildren: () => import('./animatie/animatie.module').then( m => m.AnimatiePageModule)
+  },
+  {
+    path: 'animatie',
+    loadChildren: () => import('./animatie/animatie.module').then( m => m.AnimatiePageModule)
+  },
+  {
+    path: 'safari',
+    loadChildren: () => import('./safari/safari.module').then( m => m.SafariPageModule)
+  },
+  {
+    path: 'safari',
+    loadChildren: () => import('./safari/safari.module').then( m => m.SafariPageModule)
+  },
 ];
 
 @NgModule({

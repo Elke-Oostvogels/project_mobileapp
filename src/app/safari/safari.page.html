@@ -9,6 +9,7 @@
 
 <ion-content>
   <div id="container">
+    <ion-grid>
       <h3>Zeehonden spotten op de schelde!</h3>
       <p>Ook zin in een mooie vaartocht over de Westerschelde, op zoek naar de zeehond? Kijk dan welke data nog beschikbaar zijn en reserveer vandaag nog!</p>
 
@@ -17,11 +18,16 @@
         <ion-item *ngFor="let info of algInfo">€ {{info.prijs}} p.p {{info.leeftijdscat}}</ion-item>
       </ion-list>
       <h2>Reserveren</h2>
-    <ion-item>
-      <ion-label position="stacked">Aantal personen</ion-label>
-      <ion-input type="number"></ion-input>
-      <!--Selecteren aantal volwassenen en aantal kinderen voor een juiste berekening-->
-    </ion-item>
+      <ion-row>
+        <ion-col *ngFor="let info of algInfo">
+          <ion-item>
+            <ion-label position="stacked">Aantal {{info.leeftijdscat}}</ion-label>
+            <ion-input type="number"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+
     <ion-item>
       <ion-button expand="block" (click)="openPicker()">Selecteer een datum</ion-button>
     </ion-item>
@@ -45,5 +51,6 @@
 <ion-button expand="block" strong="true">
   Reserveren
 </ion-button>
+    </ion-grid>
   </div>
 </ion-content>

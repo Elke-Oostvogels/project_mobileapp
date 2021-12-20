@@ -30,6 +30,9 @@ export class SafariPage implements OnInit {
   isIos = false;
   col='Info';
   algInfo: Info[] = [];
+
+  bedrag: number;
+
   constructor(private dbServise: DatabaseService) {
     dbServise.retrieveInfoAsSnapshot(this.col).then(i => this.algInfo = i);
     console.log(this.dbServise);

@@ -8,11 +8,13 @@ import {getAuth, provideAuth} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
 import {provideFirebaseApp,initializeApp} from '@angular/fire/app';
 import {enableIndexedDbPersistence, getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
+    HttpClientModule,
   provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
   provideFirestore(()=> {
     const firestore = getFirestore();

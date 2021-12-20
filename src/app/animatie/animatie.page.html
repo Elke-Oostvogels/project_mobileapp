@@ -10,5 +10,42 @@
 </ion-header>
 
 <ion-content>
-<ion-button routerLink="/animatie/detail" t>Detail pagina hard coded</ion-button>
+  <ion-searchbar>
+  </ion-searchbar>
+  <ion-grid *ngFor="let api of apiService.getActiviteiten(); let i = index">
+    <ion-row class="">
+    <ion-list>
+      <ion-item>
+        {{api.datum}}
+      </ion-item>
+    </ion-list>
+  </ion-row>
+          <ion-grid *ngFor="let act of api.activiteiten">
+          <ion-row class="ion-justify-content-around">
+            <ion-card>
+              <ion-row>
+                <ion-col size="2">
+                  <ion-icon name="{{act.icon}}" size="large" class="ion-padding-vertical"></ion-icon>
+                </ion-col>
+                <ion-col size="8">
+                  <ion-row>
+                    <ion-card-title>{{act.naam}}</ion-card-title>
+                  </ion-row>
+                  <ion-row>
+                    <ion-icon name="time-outline"></ion-icon>
+                    <ion-label>{{act.beginTijd}}</ion-label>
+                  </ion-row>
+                  <ion-row>
+                    <ion-icon name="location"></ion-icon>
+                    <ion-label>{{act.locatie}}</ion-label>
+                  </ion-row>
+                  <ion-row>
+                    <ion-button expand="block" [routerLink]="['detail', act._id, i]">Details bekijken</ion-button>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-row>
+        </ion-grid>
+        </ion-grid>
 </ion-content>

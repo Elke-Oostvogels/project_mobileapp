@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {ApiService} from '../services/api.service';
+import {Observable} from 'rxjs';
+import {ApiResult} from '../../types/apiResult';
 
 @Component({
   selector: 'app-animatie',
@@ -7,9 +10,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AnimatiePage implements OnInit {
 
-  constructor() { }
+  constructor(public apiService: ApiService) {}
 
   ngOnInit() {
   }
-
 }

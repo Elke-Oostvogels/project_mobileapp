@@ -22,7 +22,11 @@ return this.activiteiten;
 
   getActiviteitViaId(id: string, i: number): Activiteit{
     // return this.getActiviteiten().find(x=>x.activiteiten.find(y=>y._id === id))?.activiteiten.find(y=>y._id === id);
+    console.log('i',i);
      return this.getActiviteiten()[i]?.activiteiten.find(y=>y._id === id);
+  }
+  getDatumViaI(i: number): ApiResult{
+    return this.getActiviteiten()[i];
   }
 
  private async loadData(): Promise<void>{
@@ -36,6 +40,4 @@ return this.activiteiten;
       ).toPromise();
     console.log(this.activiteiten);
   }
-
-
  }

@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../services/api.service';
-import {Time} from "@angular/common";
+import {AlertController} from '@ionic/angular';
+import {LocalNotification, LocalNotifications} from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-detail',
@@ -11,20 +12,21 @@ import {Time} from "@angular/common";
 export class DetailPage implements OnInit {
   naam: string;
   icon: string;
-  beginTijd: Time;
-  eindTijd: Time;
-  leeftijfscat: string;
+  beginTijd: Date;
+  eindTijd: Date;
+  leeftijdscat: string;
   typeActiviteit: string;
   locatie: string;
   beschrijving: string;
   persLimiet: string;
   prijs: number;
+  datumAct: Date;
 
-  constructor(public activatedRoute: ActivatedRoute, public apiService: ApiService) {
-  }
+  constructor(public activatedRoute: ActivatedRoute, public apiService: ApiService, private alertController: AlertController) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setData();
+    await LocalNotifications.requestPermissions();
   }
 
   setData(): void {
@@ -33,12 +35,52 @@ export class DetailPage implements OnInit {
     const activiteit = this.apiService.getActiviteitViaId(id, datum);
 
     this.naam = activiteit.naam;
-    this.leeftijfscat = activiteit.leeftijfscat;
-    this.prijs= activiteit.prijs;
+    console.log(this.naam);
+    this.leeftijdscat = activiteit.leeftijdscat;
+    this.prijs = activiteit.prijs;
     this.beginTijd = activiteit.beginTijd;
+    this.eindTijd = activiteit.eindTijd;
     this.beschrijving = activiteit.beschrijving;
-    console.log(activiteit);
+    this.locatie = activiteit.locatie;
+    this.typeActiviteit = activiteit.typeActiviteit;
+    this.datumAct = this.apiService.getDatumViaI(datum).datum;
+  console.log(this.datumAct);
   }
 
-}
+  async alertInschrijvingen(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Inschrijven activiveit',
+      buttons: [
+        {
+          text: 'Annuleren',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'OK',
+          handler: (data) => {
+          }
+        }
+      ],
+      inputs: [
+        {
+          name: 'aantalPersonen',
+          type: 'number',
+          placeholder: 'Aantal personen'
+        }
+      ]
+    });
 
+    await alert.present();
+  }
+
+  async reminderActivity() {
+    const messager: LocalNotification= {
+      title: this.naam,
+      body: this.naam + ' deze activitiet start over 15 minuten aan ' + this.locatie,
+      id: 1,
+      schedule: {at: new Date(this.beginTijd.setTime(this.beginTijd.getTime())-150000)}
+    };
+    LocalNotifications.schedule({
+      notifications:[messager]});
+  }
+}

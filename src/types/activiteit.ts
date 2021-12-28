@@ -4,9 +4,9 @@ export interface Activiteit {
   naam: string;
   _id: string;
   icon: string;
-  beginTijd: Time;
-  eindTijd: Time;
-  leeftijfscat: string;
+  beginTijd: Date;
+  eindTijd: Date;
+  leeftijdscat: string;
   typeActiviteit: string;
   locatie: string;
   beschrijving: string;

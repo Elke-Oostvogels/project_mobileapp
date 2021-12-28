@@ -8,35 +8,31 @@
 
 
 </ion-header>
-
 <ion-content>
-  <ion-searchbar>
+  <ion-searchbar [value]="zoekterm">
   </ion-searchbar>
-  <ion-grid *ngFor="let api of apiService.getActiviteiten(); let i = index">
-    <ion-row class="">
+  <div id="container" *ngFor="let api of apiService.getActiviteiten(); let i = index">
     <ion-list>
       <ion-item>
-        {{api.datum}}
+        {{api.datum | date:'MMMM d, y'}}
       </ion-item>
     </ion-list>
-  </ion-row>
-          <ion-grid *ngFor="let act of api.activiteiten">
-          <ion-row class="ion-justify-content-around">
+          <div *ngFor="let act of api.activiteiten">
             <ion-card>
               <ion-row>
-                <ion-col size="2">
-                  <ion-icon name="{{act.icon}}" size="large" class="ion-padding-vertical"></ion-icon>
+                <ion-col size="5">
+                  <ion-icon name="{{act.icon}}" style="padding: 15px" class="ion-padding-vertical"></ion-icon>
                 </ion-col>
-                <ion-col size="8">
+                <ion-col size="7">
                   <ion-row>
                     <ion-card-title>{{act.naam}}</ion-card-title>
                   </ion-row>
                   <ion-row>
-                    <ion-icon name="time-outline"></ion-icon>
-                    <ion-label>{{act.beginTijd}}</ion-label>
+                    <ion-icon size="small" name="time-outline"></ion-icon>
+                    <ion-label>{{act.beginTijd | date:'H:mm'}}</ion-label>
                   </ion-row>
                   <ion-row>
-                    <ion-icon name="location"></ion-icon>
+                    <ion-icon size="small" name="location"></ion-icon>
                     <ion-label>{{act.locatie}}</ion-label>
                   </ion-row>
                   <ion-row>
@@ -45,7 +41,6 @@
                 </ion-col>
               </ion-row>
             </ion-card>
-          </ion-row>
-        </ion-grid>
-        </ion-grid>
+        </div>
+        </div>
 </ion-content>

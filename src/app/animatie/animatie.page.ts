@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiService} from '../services/api.service';
-import {Observable} from 'rxjs';
-import {ApiResult} from '../../types/apiResult';
 
 @Component({
   selector: 'app-animatie',
@@ -10,8 +8,19 @@ import {ApiResult} from '../../types/apiResult';
 })
 export class AnimatiePage implements OnInit {
 
+  zoekterm ='';
   constructor(public apiService: ApiService) {}
 
+  async zoekenOpwijzigingHandler(event: any): Promise<void>{
+    this.zoekterm = event.detail.value;
+    await this.ophalenDatums(true);
+  }
+
   ngOnInit() {
+  }
+
+  private async  ophalenDatums(reset =false): Promise<void>{
+    const result = await this.apiService.getActiviteiten();
+
   }
 }

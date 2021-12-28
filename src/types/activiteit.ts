@@ -10,7 +10,7 @@ export interface Activiteit {
   typeActiviteit: string;
   locatie: string;
   beschrijving: string;
-  persLimiet: string;
+  persLimiet: number;
   prijs: number;
 }
 

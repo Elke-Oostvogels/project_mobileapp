@@ -11,16 +11,16 @@ export class AnimatiePage implements OnInit {
   zoekterm ='';
   constructor(public apiService: ApiService) {}
 
-  async zoekenOpwijzigingHandler(event: any): Promise<void>{
-    this.zoekterm = event.detail.value;
-    await this.ophalenDatums(true);
-  }
+  // async zoekenOpDatumHandler(event: any): Promise<void>{
+  //   this.zoekterm = event.detail.value;
+  //   console.log(this.zoekterm);
+  //   await this.ophalenDatums(this.zoekterm);
+  // }
 
   ngOnInit() {
   }
 
-  private async  ophalenDatums(reset =false): Promise<void>{
-    const result = await this.apiService.getActiviteiten();
-
-  }
+  // private async  ophalenDatums(zoekterm: string): Promise<void>{
+  //   await this.apiService.getDatumViaZoekTerm(zoekterm);
+  // }
 }

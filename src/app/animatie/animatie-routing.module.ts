@@ -13,7 +13,7 @@ const routes: Routes = [
     loadChildren: () => import('../Animatie/detail/detail.module').then( m => m.DetailPageModule)
   },
   {
-    path: 'detail/:id/:dag',
+    path: 'detail/:id/:datum',
     loadChildren: () => import('../Animatie/detail/detail.module').then( m => m.DetailPageModule)
   }
 ];

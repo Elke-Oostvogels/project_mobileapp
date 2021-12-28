@@ -19,29 +19,40 @@
 
   <div id="container">
     <h1>Nu bezig</h1>
-    <ion-card>
-      <ion-row>
-        <ion-col>
-          <ion-img></ion-img>
-        </ion-col>
+    <div *ngIf="apiService.getHuidigeActiviteit() === undefined">
+<!--    <div>-->
+      <p>Momenteel is er geen activiteit bezig. <br/> Bekijk ons animatieprogramma voor al de toekomstige activiteiten</p>
+      <ion-button  routerLink="/animatie">
+        Animatieprogramma
+      </ion-button>
+    </div>
+    <div *ngIf="apiService.getHuidigeActiviteit() !== undefined">
+<!--    <div>-->
+      <ion-card>
+        <ion-row>
           <ion-col>
-          <ion-row>
-            <ion-card-title>Hee ga je mee...?</ion-card-title>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="time-outline"></ion-icon>
-            <ion-label>9:30 -10:00</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="location"></ion-icon>
-            <ion-label>Over het park</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-button expand="block">Details bekijken</ion-button>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-card>
+            <ion-icon ></ion-icon>
+          </ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-card-title></ion-card-title>
+            </ion-row>
+            <ion-row>
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-label></ion-label>
+            </ion-row>
+            <ion-row>
+              <ion-icon name="location"></ion-icon>
+              <ion-label></ion-label>
+            </ion-row>
+            <ion-row>
+              <ion-button expand="block">Details bekijken</ion-button>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </div>
+
     <h1>Niet te missen</h1>
     <ion-card>
       <ion-row>
@@ -92,11 +103,10 @@
       Plan hier een schelde safari of bekijk ons animatieprogramma.
     </p>
    <ion-row>
-       <ion-button>
+       <ion-button routerLink="/safari">
          Schelde safari
        </ion-button>
-
-     <ion-button >
+     <ion-button routerLink="/animatie">
         Animatie
      </ion-button>
    </ion-row>

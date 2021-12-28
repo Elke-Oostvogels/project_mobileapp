@@ -9,12 +9,12 @@
 
 </ion-header>
 <ion-content>
-  <ion-searchbar [value]="zoekterm">
-  </ion-searchbar>
+<!--  <ion-searchbar [value]="zoekterm" (ionChange)="zoekenOpDatumHandler($event)">-->
+<!--  </ion-searchbar>-->
   <div id="container" *ngFor="let api of apiService.getActiviteiten(); let i = index">
     <ion-list>
       <ion-item>
-        {{api.datum | date:'MMMM d, y'}}
+        {{api.datum | date:'d MMMM y': '-120'}}
       </ion-item>
     </ion-list>
           <div *ngFor="let act of api.activiteiten">
@@ -29,7 +29,7 @@
                   </ion-row>
                   <ion-row>
                     <ion-icon size="small" name="time-outline"></ion-icon>
-                    <ion-label>{{act.beginTijd | date:'H:mm'}}</ion-label>
+                    <ion-label>{{act.beginTijd | date:'H:mm': 'GMT+0'}}</ion-label>
                   </ion-row>
                   <ion-row>
                     <ion-icon size="small" name="location"></ion-icon>

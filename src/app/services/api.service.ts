@@ -4,8 +4,6 @@ import {Observable} from 'rxjs';
 import {ApiResult} from '../../types/apiResult';
 import {map} from 'rxjs/operators';
 import {Activiteit} from '../../types/activiteit';
-import firebase from "firebase/compat";
-import database = firebase.database;
 
 @Injectable({
   providedIn: 'root'
@@ -44,10 +42,10 @@ export class ApiService {
   // }
 
     getHuidigeActiviteit(): Activiteit{
-    const huidigetijd = new Date().getTime().toString();
+    const huidigetijd = new Date().toJSON().substring(11);
     // console.log(new Date().toJSON().substring(0,10));
     return this.getActiviteiten().find(x=>x.datum.toString().substring(0,10) === new Date().toJSON().substring(0,10))
-      ?.activiteiten.find(y=>y.beginTijd.toString() <= huidigetijd && y.eindTijd.toString() < huidigetijd);
+      ?.activiteiten.find(y=>y.beginTijd.toString().substring(11) <= huidigetijd && y.eindTijd.toString().substring(11) > huidigetijd);
   }
 
   // getUitgelichteActiviteiten(): Activiteit{

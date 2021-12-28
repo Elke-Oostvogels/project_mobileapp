@@ -41,18 +41,17 @@ export class DetailPage implements OnInit {
 
     this._id = activiteit._id;
     this.naam = activiteit.naam;
-    console.log(this.naam);
     this.leeftijdscat = activiteit.leeftijdscat;
     this.prijs = activiteit.prijs;
     this.beginTijd = activiteit.beginTijd;
     this.persLimiet = activiteit.persLimiet;
-    console.log(this.beginTijd);
     this.eindTijd = activiteit.eindTijd;
+    console.log(this.beginTijd);
     this.beschrijving = activiteit.beschrijving;
     this.locatie = activiteit.locatie;
     this.typeActiviteit = activiteit.typeActiviteit;
     this.datumAct = this.apiService.getDatumViaI(datum).datum;
-    console.log('datum', this.datumAct);
+
   }
 
   async alertInschrijvingen(): Promise<void> {
@@ -117,7 +116,7 @@ export class DetailPage implements OnInit {
       title: this.naam,
       body: this.naam + ' deze activitiet start over 15 minuten aan ' + this.locatie,
       id: 1,
-      schedule: {at: new Date(this.beginTijd.setTime(this.beginTijd.getTime())-(900*100))}
+      schedule: {at: new Date(this.beginTijd.setTime(this.beginTijd.getTime())-(6000*15))}
     };
     LocalNotifications.schedule({
       notifications:[messager]});

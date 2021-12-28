@@ -1,11 +1,11 @@
 import {Time} from '@angular/common';
 
-export interface Activiteit {
+export interface Activiteit<D> {
   naam: string;
   _id: string;
   icon: string;
-  beginTijd: Date;
-  eindTijd: Date;
+  beginTijd: D;
+  eindTijd: D;
   leeftijdscat: string;
   typeActiviteit: string;
   locatie: string;

@@ -8,16 +8,19 @@
 </ion-header>
 
 <ion-content>
-  <div id="container">
     <ion-grid>
-      <h3>Zeehonden spotten op de schelde!</h3>
+      <div id="fotozeehonden">
+        <h3 class="white ion-text-center">Zeehonden spotten op de schelde!</h3>
+      </div>
       <p>Ook zin in een mooie vaartocht over de Westerschelde, op zoek naar de zeehond? Kijk dan welke data nog beschikbaar zijn en reserveer vandaag nog!</p>
 
       <h4>Prijzen</h4>
       <ion-list>
         <ion-item *ngFor="let info of algInfo">€ {{info.prijs}} p.p {{info.leeftijdscat}}</ion-item>
       </ion-list>
-      <h2>Reserveren</h2>
+
+      <div id="fotoboot"></div>
+      <h2 class="ion-text-center">Reserveren</h2>
       <ion-row>
         <ion-col *ngFor="let info of algInfo">
           <ion-item>
@@ -52,5 +55,4 @@
   Reserveren
 </ion-button>
     </ion-grid>
-  </div>
 </ion-content>

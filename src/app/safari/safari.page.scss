@@ -14,3 +14,30 @@ text-align: center;
 .width-80{
   width: 80%;
 }
+
+.white{
+  color: #ffffff;
+  padding: 5%;
+}
+
+#fotoboot{
+  background-image: url("../../assets/scheldesafari_boot.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 25vh;
+  background-position: center;
+  margin: 0;
+}
+
+#fotozeehonden{
+  background-image: url("../../assets/zeehonden.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 15vh;
+  background-position: center;
+  margin: 0;
+}
+
+ion-grid{
+  margin: 5px;
+}

@@ -46,11 +46,11 @@ export class DetailPage implements OnInit {
     this.beginTijd = activiteit.beginTijd;
     this.persLimiet = activiteit.persLimiet;
     this.eindTijd = activiteit.eindTijd;
-    console.log(this.beginTijd);
     this.beschrijving = activiteit.beschrijving;
     this.locatie = activiteit.locatie;
     this.typeActiviteit = activiteit.typeActiviteit;
     this.datumAct = this.apiService.getDatumViaI(datum).datum;
+    console.log(this.datumAct);
 
   }
 
@@ -112,11 +112,14 @@ export class DetailPage implements OnInit {
   }
 
   async reminderActivity() {
+    const time = this.beginTijd.toISOString().substring(10,24);
+    const date = this.datumAct.toISOString().substring(0,10);
     const messager: LocalNotification= {
       title: this.naam,
       body: this.naam + ' deze activitiet start over 15 minuten aan ' + this.locatie,
       id: 1,
-      schedule: {at: new Date(this.beginTijd.setTime(this.beginTijd.getTime())-(6000*15))}
+       // schedule: {at: new Date(new Date(this.datumAct).setTime(this.beginTijd.getTime())-(90*1000))}
+       schedule: {at: new Date(new Date(date + time).getTime()-(4500*1000))}
     };
     LocalNotifications.schedule({
       notifications:[messager]});

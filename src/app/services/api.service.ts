@@ -12,15 +12,10 @@ export class ApiService {
   readonly baseURL = 'https://api-animatie.netlify.app/.netlify/functions/api';
   private activiteiten: ApiResult<Date>[] = [];
   private activiteitenToekomst: ApiResult<Date>[] = [];
-
+  private uitgelichteActiviteiten: ApiResult<Date>[] = [];
 
   constructor(private http: HttpClient) {
-    this.loadData().then(response => this.filterenOpDatum());
-
-    // this.filterenOpDatum();
-    console.log('Toekomstige act', this.activiteitenToekomst);
-
-  }
+    this.loadData().then(response => this.filterenOpDatum()); }
 
   getActiviteiten(): ApiResult<Date>[] {
     return this.activiteitenToekomst;
@@ -41,11 +36,9 @@ export class ApiService {
   //   return this.getActiviteiten().find(x => x.datum.toString() === zoekterm);
   // }
 
-  getHuidigeActiviteit(): Activiteit<Date> {
-    const huidigetijd = new Date().toJSON().substring(11);
-    // console.log(new Date().toJSON().substring(0,10));
-    return this.getActiviteiten().find(x => x.datum.toString().substring(0, 10) === new Date().toJSON().substring(0, 10))
-      ?.activiteiten.find(y => y.beginTijd.toString().substring(11) <= huidigetijd && y.eindTijd.toString().substring(11) > huidigetijd);
+ async getHuidigeActiviteit(): Promise<ApiResult<Date>>{
+    const today = new  Date();
+    return this.uitgelichteActiviteiten.find(x=>x.activiteiten.find(z=>z.beginTijd.getTime() >= today.getTime() && z.eindTijd.getTime() < today.getTime()));
   }
 
   // getUitgelichteActiviteiten(): Activiteit{
@@ -75,13 +68,24 @@ export class ApiService {
   private async filterenOpDatum(): Promise<void> {
     for (const activiteit of this.activiteiten) {
       const date = activiteit.datum;
-      const today = new Date().toJSON();
-      if (date.toString() > today) {
+      const today = new Date();
+      if (date >= today) {
         this.activiteitenToekomst.push(activiteit);
       }
     }
-    console.log(this.activiteitenToekomst);
   }
+
+  // private async filterenOPDatumVandaag(): Promise<void>{
+  //   for (const activiteit of this.activiteitenToekomst){
+  //     const date = activiteit.datum;
+  //     const today = new Date();
+  //     console.log('Datum activiteit',date, 'Datum vandaag', today);
+  //    if (date === today){
+  //       this.uitgelichteActiviteiten.push(activiteit);
+  //     }
+  //   }
+  //   console.log(this.uitgelichteActiviteiten);
+  // }
 
   private convertStringResultToDateResult(results: ApiResult<string>[]): ApiResult<Date>[] {
     const converted: ApiResult<Date>[] = [];

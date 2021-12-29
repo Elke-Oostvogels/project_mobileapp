@@ -13,20 +13,19 @@ export class HomePage implements OnInit{
   locatie: string;
   _id: string;
   constructor(public apiService: ApiService) {
-    console.log(apiService.getHuidigeActiviteit());
   }
 
 
   ngOnInit(): void {
-    // this.setData();
+    this.setData();
   }
 
-  setData(): void{
+  setData(){
     const activiteit = this.apiService.getHuidigeActiviteit();
-
+    console.log(activiteit);
     // this.naam = activiteit.naam;
     // this._id = activiteit._id;
-    this.locatie = activiteit.locatie;
-    console.log(this.naam);
+    // this.locatie = activiteit.locatie;
+    // console.log(this.naam);
   }
 }

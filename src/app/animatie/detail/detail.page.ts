@@ -25,7 +25,9 @@ export class DetailPage implements OnInit {
   prijs: number;
   datumAct: Date;
 
-  constructor(public activatedRoute: ActivatedRoute, public apiService: ApiService, private alertController: AlertController, private dbService: DatabaseService) {
+  constructor(public activatedRoute: ActivatedRoute,
+              public apiService: ApiService, private alertController: AlertController,
+              private dbService: DatabaseService) {
   }
 
   async ngOnInit() {
@@ -39,6 +41,7 @@ export class DetailPage implements OnInit {
     console.log('index nummer', datum);
     const activiteit = this.apiService.getActiviteitViaId(id, datum);
 
+    // eslint-disable-next-line no-underscore-dangle
     this._id = activiteit._id;
     this.naam = activiteit.naam;
     this.leeftijdscat = activiteit.leeftijdscat;
@@ -82,7 +85,8 @@ export class DetailPage implements OnInit {
             handler: (data) => {
               const aantal = data;
               console.log(aantal);
-              this.dbService.sendInschrijving(data, this._id);
+              // eslint-disable-next-line no-underscore-dangle
+              this.dbService.sendInschrijvingActiviteit(data, this._id);
               this.bevestigingNotification();
             }
           }

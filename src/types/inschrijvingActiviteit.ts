@@ -1,5 +1,4 @@
-export interface Inschrijving {
+export interface InschrijvingActiviteit {
   aantalPers: number;
   activiteitId: string;
-
 }

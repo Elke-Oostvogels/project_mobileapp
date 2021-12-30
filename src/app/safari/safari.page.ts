@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DatabaseService} from '../services/database.service';
 import {Info} from '../../types/info';
 import {
@@ -8,9 +8,10 @@ import {
   DatePickerTheme
 } from '@capacitor-community/date-picker';
 import {Plugins} from '@capacitor/core';
+import {SafariInfo} from '../../types/safariInfo';
 
 const datePicker: DatePickerPluginInterface = Plugins.DatePickerPlugin as any;
-const { device } = Plugins;
+const {device} = Plugins;
 
 @Component({
   selector: 'app-safari',
@@ -18,6 +19,22 @@ const { device } = Plugins;
   styleUrls: ['./safari.page.scss'],
 })
 export class SafariPage implements OnInit {
+  // variable form reservatie
+  isIos = false;
+  isAndroid = false;
+  isWeb = true;
+  col = 'Info';
+  algInfo: Info[] = [];
+  dataInfo: { maanden: number[]; jaren: number[]; uren: number[]; dagen: number[] }[];
+  aantalPersMin12: number;
+  aantalPersPlus12: number;
+  bedragMin12: number;
+  bedragPlus12: number;
+  totaalbedrag: number;
+  datum: Date;
+  time: Date;
+
+  // variable plugin datepicker
   max: Date;
   min: Date;
   theme: DatePickerTheme;
@@ -27,20 +44,37 @@ export class SafariPage implements OnInit {
   cancelText: string;
   timeMode = false;
   mergedDateAndTime = false;
-  isIos = false;
-  col='Info';
-  algInfo: Info[] = [];
 
-  bedrag: number;
 
   constructor(private dbServise: DatabaseService) {
-    dbServise.retrieveInfoAsSnapshot(this.col).then(i => this.algInfo = i);
-    console.log(this.dbServise);
+    dbServise.retrieveInfoAsSnapshot('Info').then(i => this.algInfo = i);
+    dbServise.retrieveDataInfoAsSnapshot('Data').then(i => this.dataInfo = i);
+  }
+
+  prijsberekenen() {
+    this.setdata();
+    console.log('- 12', this.aantalPersMin12, '+ 12', this.aantalPersPlus12);
+    console.log('- 12', this.bedragMin12, '+ 12', this.bedragPlus12);
+    if (this.aantalPersPlus12 != null && this.aantalPersMin12 != null) {
+      this.totaalbedrag = (this.aantalPersPlus12 * this.bedragPlus12) + (this.aantalPersMin12 * this.bedragMin12);
+    } else if (this.aantalPersMin12 != null && this.aantalPersPlus12 == null) {
+      this.totaalbedrag = (this.aantalPersMin12 * this.bedragMin12);
+    } else {
+      this.totaalbedrag = (this.aantalPersPlus12 * this.bedragPlus12);
+    }
+
+  }
+
+  reservatieMaken(){
+    const aantalpers = this.aantalPersPlus12+ this.aantalPersPlus12;
+    this.dbServise.sendInschrijvingSafari(aantalpers,this.datum,this.totaalbedrag);
   }
   async ngOnInit() {
-    const info = await device.getInfo();
+  }
 
-    this.isIos = info.operatingSystem === 'ios';
+  async setdata() {
+    this.bedragMin12 = this.algInfo[0].prijs;
+    this.bedragPlus12 = this.algInfo[1].prijs;
   }
 
   async maxFocus() {

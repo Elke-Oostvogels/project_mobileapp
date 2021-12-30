@@ -17,7 +17,7 @@ export class HomePage implements OnInit{
 
 
   ngOnInit(): void {
-    this.setData();
+    // this.setData();
   }
 
   setData(){

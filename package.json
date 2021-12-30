@@ -13,7 +13,8 @@
     "android": "ionic build --prod && npx cap sync android && npx cap open android",
     "android-splash": "cordova-res android --type splash --skip-config --copy",
     "android-icon-adaptive": "cordova-res android --type adaptive-icon --icon-foreground-source resources/icon.png --icon-background-source #FFFFFF --skip-config --copy",
-    "android-resources": "npm run android-splash && npm run android-icon-adaptive"
+    "android-resources": "npm run android-splash && npm run android-icon-adaptive",
+    "android-live": "ionic build && npx cap sync android && ionic cap run android -l --external"
   },
   "private": true,
   "dependencies": {

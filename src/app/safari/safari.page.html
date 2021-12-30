@@ -22,22 +22,47 @@
       <div id="fotoboot"></div>
       <h2 class="ion-text-center">Reserveren</h2>
       <ion-row>
-        <ion-col *ngFor="let info of algInfo">
+        <ion-col>
           <ion-item>
-            <ion-label position="stacked">Aantal {{info.leeftijdscat}}</ion-label>
-            <ion-input type="number"></ion-input>
+            <ion-label position="stacked">Aantal tot 12 jaar</ion-label>
+            <ion-input type="number" [(ngModel)]="aantalPersMin12" (ionChange)="prijsberekenen()"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Aantal vanaf 12 jaar</ion-label>
+            <ion-input type="number" [(ngModel)]="aantalPersPlus12" (ionChange)="prijsberekenen()"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
 
 
-    <ion-item>
+    <ion-item *ngIf="isAndroid">
       <ion-button expand="block" (click)="openPicker()">Selecteer een datum</ion-button>
     </ion-item>
 
-    <ion-item>
-      <ion-label><ion-icon name="time-outline"></ion-icon></ion-label>
-      <ion-datetime displayFormat="H:mm" minuteValues="0" hour-values="10,11,12,14,15,16,17"  placeholder="Selecteer een vertrektijd"></ion-datetime>
+    <ion-item *ngIf="isWeb">
+      <ion-button id="open-modal-date">Selecteer een datum</ion-button>
+      <ion-modal trigger="open-modal-date">
+        <ng-template>
+          <ion-content *ngFor="let dat of dataInfo">
+
+            <ion-datetime presentation="date" [(ngModel)]="datum" size="cover"  monthValues="{{dat.maanden}}" yearValues="{{dat.jaren}}" dayValues="{{dat.dagen}}">
+              <div slot="title">Kies een datum voor uw schelde safari</div>
+            </ion-datetime>
+            <ion-button>Datum selecteren</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+      <ion-button id="open-modal-time">Selecteer een tijdstip</ion-button>
+      <ion-modal trigger="open-modal-time">
+        <ng-template>
+          <ion-content *ngFor="let dat of dataInfo">
+            <ion-datetime presentation="time" [(ngModel)]="datum" size="cover"  hourValues="{{dat.uren}}" minuteValues="0">
+            </ion-datetime>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
     </ion-item>
 
     <ion-row>
@@ -48,10 +73,10 @@
       </div>
 
       <div class="width-20">
-        <p>€5.00</p>
+        <p>{{totaalbedrag}}</p>
       </div>
     </ion-row>
-<ion-button expand="block" strong="true">
+<ion-button expand="block" strong="true" (click)="reservatieMaken()">
   Reserveren
 </ion-button>
     </ion-grid>

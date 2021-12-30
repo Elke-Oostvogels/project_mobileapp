@@ -24,6 +24,7 @@ export class ApiService {
   getActiviteitViaId(id: string, i: number): Activiteit<Date> {
     // return this.getActiviteiten().find(x=>x.activiteiten.find(y=>y._id === id))?.activiteiten.find(y=>y._id === id);
     console.log('i', i);
+    // eslint-disable-next-line no-underscore-dangle
     return this.getActiviteiten()[i]?.activiteiten.find(y => y._id === id);
   }
 
@@ -97,6 +98,7 @@ export class ApiService {
           eindTijd: new Date(a.eindTijd)
         }));
       converted.push({
+        // eslint-disable-next-line no-underscore-dangle
         _id: r._id,
         activiteiten,
         datum: new Date(r.datum)

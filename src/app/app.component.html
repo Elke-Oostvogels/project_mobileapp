@@ -1,8 +1,9 @@
 <ion-app>
+  <ion-split-pane contentId="main" when="md">
   <ion-menu #menu side='start' menuId="menu" contentId='main'>
     <ion-header>
       <ion-toolbar color='primary'>
-        <ion-title>Schelde Oord</ion-title>
+        <ion-title>Scheldeoord</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -14,4 +15,5 @@
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

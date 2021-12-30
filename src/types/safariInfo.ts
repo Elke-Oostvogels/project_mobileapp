@@ -3,4 +3,5 @@ export interface SafariInfo {
   jaren: number[];
   maanden: number[];
   uren: number[];
+  plaatsen: number;
 }

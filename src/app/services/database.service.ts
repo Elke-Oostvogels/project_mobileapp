@@ -21,7 +21,7 @@ export class DatabaseService {
     console.log(results);
     return results.docs.map(d => ({...d.data(), key: d.id}));
   }
-  async retrieveDataInfoAsSnapshot(col: string): Promise<{ maanden: number[]; jaren: number[]; uren: number[]; dagen: number[] }[]> {
+  async retrieveDataInfoAsSnapshot(col: string): Promise<{ maanden: number[]; jaren: number[]; uren: number[]; dagen: number[]; plaatsen: number }[]> {
     const results = await getDocs<SafariInfo>(
       query<SafariInfo>(this.getCollectionRef(col))
     );

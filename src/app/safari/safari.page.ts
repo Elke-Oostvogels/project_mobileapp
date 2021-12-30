@@ -1,16 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {DatabaseService} from '../services/database.service';
 import {Info} from '../../types/info';
-import {
-  DatePickerMode,
-  DatePickerOptions,
-  DatePickerPluginInterface,
-  DatePickerTheme
-} from '@capacitor-community/date-picker';
 import {Plugins} from '@capacitor/core';
-import {SafariInfo} from '../../types/safariInfo';
 
-const datePicker: DatePickerPluginInterface = Plugins.DatePickerPlugin as any;
+import {AlertController} from '@ionic/angular';
+import {Network} from '@capacitor/network';
 const {device} = Plugins;
 
 @Component({
@@ -20,41 +14,24 @@ const {device} = Plugins;
 })
 export class SafariPage implements OnInit {
   // variable form reservatie
-  isIos = false;
-  isAndroid = false;
-  isWeb = true;
-  col = 'Info';
   algInfo: Info[] = [];
-  dataInfo: { maanden: number[]; jaren: number[]; uren: number[]; dagen: number[] }[];
+  dataInfo: { maanden: number[]; jaren: number[]; uren: number[]; dagen: number[]; plaatsen: number }[];
   aantalPersMin12: number;
   aantalPersPlus12: number;
+  totaalPers: number;
   bedragMin12: number;
   bedragPlus12: number;
   totaalbedrag: number;
   datum: Date;
-  time: Date;
+  time: number;
 
-  // variable plugin datepicker
-  max: Date;
-  min: Date;
-  theme: DatePickerTheme;
-  mode: DatePickerMode;
-  locale: string;
-  doneText: string;
-  cancelText: string;
-  timeMode = false;
-  mergedDateAndTime = false;
-
-
-  constructor(private dbServise: DatabaseService) {
+  constructor(private dbServise: DatabaseService , private alertController: AlertController) {
     dbServise.retrieveInfoAsSnapshot('Info').then(i => this.algInfo = i);
     dbServise.retrieveDataInfoAsSnapshot('Data').then(i => this.dataInfo = i);
   }
 
   prijsberekenen() {
     this.setdata();
-    console.log('- 12', this.aantalPersMin12, '+ 12', this.aantalPersPlus12);
-    console.log('- 12', this.bedragMin12, '+ 12', this.bedragPlus12);
     if (this.aantalPersPlus12 != null && this.aantalPersMin12 != null) {
       this.totaalbedrag = (this.aantalPersPlus12 * this.bedragPlus12) + (this.aantalPersMin12 * this.bedragMin12);
     } else if (this.aantalPersMin12 != null && this.aantalPersPlus12 == null) {
@@ -65,9 +42,84 @@ export class SafariPage implements OnInit {
 
   }
 
-  reservatieMaken(){
-    const aantalpers = this.aantalPersPlus12+ this.aantalPersPlus12;
-    this.dbServise.sendInschrijvingSafari(aantalpers,this.datum,this.totaalbedrag);
+ async reservatieMaken() {
+    // this.checkNetwork();
+    let ok = await this.controleAantalPersonen(this.aantalPersMin12, this.aantalPersPlus12);
+    ok += await this.controleInvoerDatum(this.datum);
+    ok += await this.controleInvoerTijdstip(this.time);
+
+    if (ok === ''){
+      this.datum = new Date(this.datum);
+      this.datum.setHours(this.time);
+      this.datum.setMinutes(0);
+
+      this.dbServise.sendInschrijvingSafari(this.totaalPers, this.datum, this.totaalbedrag);
+      const alert = await this.alertController.create({
+        header: 'Bevestiging reservatie',
+        message: 'Uw reservatie is succesvol geregistreerd, wij verwachten u ' + this.datum.toLocaleDateString()+ ' in Haven de Val',
+        buttons: [
+          {
+            text: 'Oke',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }
+        ]
+      });
+      await alert.present();
+      this.totaalbedrag = 0;
+      this.aantalPersPlus12 =null;
+      this.aantalPersMin12 = null;
+      this.datum = null;
+    }
+    else{
+      const alert = await this.alertController.create({
+        header: 'Fout bij reservatie',
+        message: ok,
+        buttons: [
+          {
+            text: 'Oke',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }
+        ]
+      });
+      await alert.present();
+    }
+  }
+
+  async controleInvoerDatum(datum: Date): Promise<string>{
+    if (datum == null){
+      return 'Gelieve een datum in te vullen.';
+    }
+    return '';
+  }
+
+  async controleInvoerTijdstip(time: number): Promise<string>{
+    if (time == null){
+      return 'Gelieve een tijdstip te kiezen.';
+    }
+    return '';
+  }
+  async controleAantalPersonen(aantalPersmin12: number, aantalPerplus12: number): Promise<string>{
+    if (aantalPerplus12 == null && aantalPersmin12 != null){
+      return 'Kinderen onder de 12 jaar moeten begeleid worden door minstens één volwassenen.';
+    } else if (aantalPersmin12 == null && aantalPerplus12 != null){
+      if (aantalPerplus12 <=6){
+        this.totaalPers = aantalPerplus12;
+      }
+      else{
+        return 'Op de boot van de scheldesafari is maar plaats voor 6 personen';
+      }
+    } else{
+      this.totaalPers = aantalPerplus12 + aantalPersmin12;
+      if (this.totaalPers > 6){
+        return 'Op de boot van de scheldesafari is maar plaats voor 6 personen';
+      }
+      else{
+        return '';
+      }
+    }
+    return '';
   }
   async ngOnInit() {
   }
@@ -77,65 +129,17 @@ export class SafariPage implements OnInit {
     this.bedragPlus12 = this.algInfo[1].prijs;
   }
 
-  async maxFocus() {
-    document.body.focus();
-    this.max = null;
-    const pickerResult = await this.openPicker();
-    if (pickerResult?.value) {
-      this.max = new Date(pickerResult.value);
-    }
-  }
 
-  async minFocus() {
-    document.body.focus();
-    this.min = null;
-    const pickerResult = await this.openPicker();
-    if (pickerResult?.value) {
-      this.min = new Date(pickerResult.value);
-    }
-  }
+ async checkNetwork(){
+   Network.addListener('networkStatusChange', status => {
+     console.log('Network status changed', status);
+   });
 
-  async openPicker() {
-    const options: DatePickerOptions = {};
-    if (this.max) {
-      if (this.mode === 'date') {
-        this.max.setHours(23, 59, 59, 999);
-      }
-      options.max = this.max.toISOString();
-    }
-    if (this.timeMode) {
-      options.is24h = true;
-    }
-    if (this.min) {
-      if (this.mode === 'date') {
-        this.min.setHours(0, 0, 0, 0);
-      }
-      options.min = this.min.toISOString();
-    }
-    if (this.theme) {
-      options.theme = 'dark';
-    }
-    if (this.mode) {
-      options.mode = 'date';
-    }
-    if (this.locale) {
-      options.locale = this.locale;
-    }
-    if (this.doneText) {
-      options.doneText = this.doneText;
-    }
-    if (this.cancelText) {
-      options.cancelText = this.cancelText;
-    }
-    if (this.mergedDateAndTime) {
-      options.mergedDateAndTime = this.mergedDateAndTime;
-    }
-    console.log(datePicker.present(options));
-    return datePicker.present(options);
-  }
 
-  async platformIs(platform: 'ios' | 'android' | 'electron' | 'web') {
-    console.log(platform);
-    return (await device.getInfo()).platform === platform;
-  }
+   };
+  logCurrentNetworkStatus = async () => {
+    const status = await Network.getStatus();
+
+    console.log('Network status:', status);
+ };
 }

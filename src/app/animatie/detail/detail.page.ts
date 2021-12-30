@@ -127,5 +127,18 @@ export class DetailPage implements OnInit {
     };
     LocalNotifications.schedule({
       notifications:[messager]});
+
+    const alert = await this.alertController.create({
+      header: 'Herrinnering ingesteld',
+      message: 'Voor de activiteit ' + this.naam + ' heeft u een herrinering ingesteld op een kwartier voor de aanvang van de activiteit.',
+      buttons: [
+        {
+          text: 'Oke',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }
+      ]
+    });
+    await alert.present();
   }
 }

@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {DatabaseService} from '../services/database.service';
 import {Info} from '../../types/info';
-import {Plugins} from '@capacitor/core';
-
 import {AlertController} from '@ionic/angular';
 import {Network} from '@capacitor/network';
-const {device} = Plugins;
+import {PluginListenerHandle} from '@capacitor/core';
 
 @Component({
   selector: 'app-safari',
@@ -25,6 +23,10 @@ export class SafariPage implements OnInit {
   datum: Date;
   time: number;
 
+  //netwerkplugin
+  // networkStatus: any;
+  // networkListener: PluginListenerHandle;
+
   constructor(private dbServise: DatabaseService , private alertController: AlertController) {
     dbServise.retrieveInfoAsSnapshot('Info').then(i => this.algInfo = i);
     dbServise.retrieveDataInfoAsSnapshot('Data').then(i => this.dataInfo = i);
@@ -43,6 +45,7 @@ export class SafariPage implements OnInit {
   }
 
  async reservatieMaken() {
+    // this.getNetWorkStatus();
     // this.checkNetwork();
     let ok = await this.controleAantalPersonen(this.aantalPersMin12, this.aantalPersPlus12);
     ok += await this.controleInvoerDatum(this.datum);
@@ -122,8 +125,22 @@ export class SafariPage implements OnInit {
     return '';
   }
   async ngOnInit() {
+    // this.networkListener = Network.addListener('networkStatusChange', (status)=>{
+    //   this.networkStatus = status;
+    //   console.log('Network status changed', status);
+    // });
   }
 
+  // async getNetWorkStatus() {
+  //   this.networkStatus = await Network.getStatus();
+  //   console.log(this.networkStatus);
+  // }
+  //
+  // endNetworkListener() {
+  //   if (this.networkListener) {
+  //     this.networkListener.remove();
+  //   }
+  // }
   async setdata() {
     this.bedragMin12 = this.algInfo[0].prijs;
     this.bedragPlus12 = this.algInfo[1].prijs;
@@ -131,15 +148,16 @@ export class SafariPage implements OnInit {
 
 
  async checkNetwork(){
-   Network.addListener('networkStatusChange', status => {
-     console.log('Network status changed', status);
-   });
-
-
-   };
-  logCurrentNetworkStatus = async () => {
-    const status = await Network.getStatus();
-
-    console.log('Network status:', status);
+  //  Network.addListener('networkStatusChange', status => {
+  //    console.log('Network status changed', status);
+  //  });
+  //
+  //
+  //  };
+  // logCurrentNetworkStatus = async () => {
+  //   const status = await Network.getStatus();
+  //
+  //   console.log('Network status:', status);
  };
+
 }

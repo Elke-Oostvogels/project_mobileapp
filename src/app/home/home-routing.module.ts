@@ -6,6 +6,14 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage,
+  },
+  {
+    path: 'detail',
+    loadChildren: () => import('../Animatie/detail/detail.module').then( m => m.DetailPageModule)
+  },
+  {
+    path: 'detail/:id/:datum',
+    loadChildren: () => import('../Animatie/detail/detail.module').then( m => m.DetailPageModule)
   }
 ];
 

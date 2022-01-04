@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
 import {ApiResult} from '../../types/apiResult';
 import {map} from 'rxjs/operators';
 import {Activiteit} from '../../types/activiteit';
@@ -12,10 +11,14 @@ export class ApiService {
   readonly baseURL = 'https://api-animatie.netlify.app/.netlify/functions/api';
   private activiteiten: ApiResult<Date>[] = [];
   private activiteitenToekomst: ApiResult<Date>[] = [];
-  private uitgelichteActiviteiten: ApiResult<Date>[] = [];
+  private uitgelichteActiviteiten: Activiteit<Date>[] = [];
+  private huidigeActiviteiten: Activiteit<Date>[] = [];
+  private activiteitenToday: ApiResult<Date>;
 
   constructor(private http: HttpClient) {
-    this.loadData().then(response => this.filterenOpDatum()); }
+    // @ts-ignore
+    this.loadData().then(response => this.filterenOpDatum());
+  }
 
   getActiviteiten(): ApiResult<Date>[] {
     return this.activiteitenToekomst;
@@ -23,7 +26,6 @@ export class ApiService {
 
   getActiviteitViaId(id: string, i: number): Activiteit<Date> {
     // return this.getActiviteiten().find(x=>x.activiteiten.find(y=>y._id === id))?.activiteiten.find(y=>y._id === id);
-    console.log('i', i);
     // eslint-disable-next-line no-underscore-dangle
     return this.getActiviteiten()[i]?.activiteiten.find(y => y._id === id);
   }
@@ -32,19 +34,50 @@ export class ApiService {
     return this.getActiviteiten()[i];
   }
 
+  listUitgelichteActiviteiten(): Activiteit<Date>[] {
+    return this.uitgelichteActiviteiten;
+  }
+  listHuidigeActiviteiten(): Activiteit<Date>[]{
+    return this.huidigeActiviteiten;
+}
   // getDatumViaZoekTerm(zoekterm: string): ApiResult {
   //   console.log(zoekterm);
   //   return this.getActiviteiten().find(x => x.datum.toString() === zoekterm);
   // }
 
- async getHuidigeActiviteit(): Promise<ApiResult<Date>>{
-    const today = new  Date();
-    return this.uitgelichteActiviteiten.find(x=>x.activiteiten.find(z=>z.beginTijd.getTime() >= today.getTime() && z.eindTijd.getTime() < today.getTime()));
+ private async getHuidigeActiviteit(): Promise<Activiteit<Date>[]> {
+
+    for (const act of this.activiteitenToday.activiteiten) {
+      // @ts-ignore
+     const begintijd = new Date().setTime(act.beginTijd);
+
+    // @ts-ignore
+      const  eindtijd = new Date().setTime(act.eindTijd);
+      if (Date.now()> begintijd && Date.now() < eindtijd) {
+        this.huidigeActiviteiten.push(act);
+      }
+    }
+
+    return this.huidigeActiviteiten;
   }
 
-  // getUitgelichteActiviteiten(): Activiteit{
-  //
-  // }
+
+
+  private async getUitgelichteActiviteiten(): Promise<Activiteit<Date>[]> {
+    for (const act of this.activiteitenToday.activiteiten) {
+      if (act.uitgelicht === true) {
+        this.uitgelichteActiviteiten.push(act);
+      }
+    }
+    return this.uitgelichteActiviteiten;
+  }
+
+  private async getApiResultToday(): Promise<void> {
+    const today = new Date();
+    this.activiteitenToday = this.activiteitenToekomst.find(x => x.datum.toLocaleDateString() === today.toLocaleDateString());
+    this.getUitgelichteActiviteiten();
+    this.getHuidigeActiviteit();
+  }
 
   private async loadData(): Promise<void> {
     this.activiteiten = await this.http
@@ -74,29 +107,19 @@ export class ApiService {
         this.activiteitenToekomst.push(activiteit);
       }
     }
+    this.getApiResultToday();
   }
 
-  // private async filterenOPDatumVandaag(): Promise<void>{
-  //   for (const activiteit of this.activiteitenToekomst){
-  //     const date = activiteit.datum;
-  //     const today = new Date();
-  //     console.log('Datum activiteit',date, 'Datum vandaag', today);
-  //    if (date === today){
-  //       this.uitgelichteActiviteiten.push(activiteit);
-  //     }
-  //   }
-  //   console.log(this.uitgelichteActiviteiten);
-  // }
 
   private convertStringResultToDateResult(results: ApiResult<string>[]): ApiResult<Date>[] {
     const converted: ApiResult<Date>[] = [];
 
     for (const r of results) {
       const activiteiten = r.activiteiten.map(a => ({
-          ...a,
-          beginTijd: new Date(a.beginTijd),
-          eindTijd: new Date(a.eindTijd)
-        }));
+        ...a,
+        beginTijd: new Date(a.beginTijd),
+        eindTijd: new Date(a.eindTijd)
+      }));
       converted.push({
         // eslint-disable-next-line no-underscore-dangle
         _id: r._id,

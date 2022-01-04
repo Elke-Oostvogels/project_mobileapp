@@ -12,6 +12,7 @@ export interface Activiteit<D> {
   beschrijving: string;
   persLimiet: number;
   prijs: number;
+  uitgelicht: boolean;
 }
 
 

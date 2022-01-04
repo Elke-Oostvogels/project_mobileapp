@@ -19,96 +19,83 @@
 
   <div id="container">
     <h1>Nu bezig</h1>
-    <div *ngIf="apiService.getHuidigeActiviteit() === undefined">
-<!--    <div>-->
-      <p>Momenteel is er geen activiteit bezig. <br/> Bekijk ons animatieprogramma voor al de toekomstige activiteiten</p>
-      <ion-button  routerLink="/animatie">
-        Animatieprogramma
-      </ion-button>
+    <div *ngIf="apiService.listHuidigeActiviteiten().length === 0">
+      <div>
+        <p>Momenteel is er geen activiteit bezig. <br/> Bekijk ons animatieprogramma voor al de toekomstige activiteiten
+        </p>
+        <ion-button>
+          Animatieprogramma
+        </ion-button>
+      </div>
     </div>
-    <div *ngIf="apiService.getHuidigeActiviteit() !== undefined">
-<!--    <div>-->
+    <div *ngIf="apiService.listHuidigeActiviteiten().length > 0">
+      <div *ngFor="let act of apiService.listHuidigeActiviteiten(); let i = index">
+        <ion-card>
+          <ion-row>
+            <ion-col>
+              <ion-icon name="{{act.icon}}" style="padding: 15px" class="ion-padding-vertical"></ion-icon>
+            </ion-col>
+            <ion-col>
+              <ion-row>
+                <ion-card-title>{{act.naam}}</ion-card-title>
+              </ion-row>
+              <ion-row>
+                <ion-icon name="time-outline" size="small"></ion-icon>
+                <ion-label>{{act.beginTijd| date:'H:mm': 'GMT+0'}}</ion-label>
+              </ion-row>
+              <ion-row>
+                <ion-icon name="location" size="small"></ion-icon>
+                <ion-label>{{act.locatie}}</ion-label>
+              </ion-row>
+              <ion-row>
+                <ion-button expand="block" [routerLink]="['detail', act._id,i]">Details bekijken</ion-button>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </div>
+    </div>
+
+    <h1>Niet te missen</h1>
+    <div *ngFor="let act of apiService.listUitgelichteActiviteiten(); let i = index">
       <ion-card>
         <ion-row>
           <ion-col>
-            <ion-icon ></ion-icon>
+            <ion-icon name="{{act.icon}}" style="padding: 15px" class="ion-padding-vertical"></ion-icon>
           </ion-col>
           <ion-col>
             <ion-row>
-              <ion-card-title></ion-card-title>
+              <ion-card-title>{{act.naam}}</ion-card-title>
             </ion-row>
             <ion-row>
-              <ion-icon name="time-outline"></ion-icon>
-              <ion-label></ion-label>
+              <ion-icon name="time-outline" size="small"></ion-icon>
+              <ion-label>{{act.beginTijd | date:'H:mm': 'GMT+0'}}</ion-label>
+              <ion-label> -</ion-label>
+              <ion-label>{{act.eindTijd | date:'H:mm': 'GMT+0'}}</ion-label>
             </ion-row>
             <ion-row>
-              <ion-icon name="location"></ion-icon>
-              <ion-label></ion-label>
+              <ion-icon name="location" size="small"></ion-icon>
+              <ion-label>{{act.locatie}}</ion-label>
             </ion-row>
             <ion-row>
-              <ion-button expand="block">Details bekijken</ion-button>
+              <ion-button expand="block" [routerLink]="['detail', act._id,i]">Details bekijken</ion-button>
             </ion-row>
           </ion-col>
         </ion-row>
       </ion-card>
     </div>
-
-    <h1>Niet te missen</h1>
-    <ion-card>
-      <ion-row>
-        <ion-col>
-          <ion-img></ion-img>
-        </ion-col>
-        <ion-col>
-          <ion-row>
-            <ion-card-title>Color run</ion-card-title>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="time-outline"></ion-icon>
-            <ion-label>19:30 - 20:30</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="location"></ion-icon>
-            <ion-label>Voetbalveld</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-button expand="block">Details bekijken</ion-button>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-card>
-    <ion-card>
-      <ion-row>
-        <ion-col>
-          <ion-img></ion-img>
-        </ion-col>
-        <ion-col>
-          <ion-row>
-            <ion-card-title>Viskraam</ion-card-title>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="time-outline"></ion-icon>
-            <ion-label>15:00-19:00</ion-label>
-          </ion-row>
-          <ion-row>
-            <ion-icon name="location"></ion-icon>
-            <ion-label>Aan de receptie</ion-label>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-card>
     <h1>Mijn reservaties</h1>
     <p>
       Je hebt nog niks gepland.
       Plan hier een schelde safari of bekijk ons animatieprogramma.
     </p>
-   <ion-row>
-       <ion-button routerLink="/safari">
-         Schelde safari
-       </ion-button>
-     <ion-button routerLink="/animatie">
+    <ion-row>
+      <ion-button routerLink="/safari">
+        Schelde safari
+      </ion-button>
+      <ion-button routerLink="/animatie">
         Animatie
-     </ion-button>
-   </ion-row>
+      </ion-button>
+    </ion-row>
   </div>
 </ion-content>

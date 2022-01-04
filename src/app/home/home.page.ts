@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from '../services/api.service';
-import {appCheckInstance$} from "@angular/fire/app-check";
+import {Activiteit} from '../../types/activiteit';
+
 
 @Component({
   selector: 'app-home',
@@ -12,20 +13,10 @@ export class HomePage implements OnInit{
   naam: string;
   locatie: string;
   _id: string;
+  activiteit: Activiteit<Date>;
   constructor(public apiService: ApiService) {
   }
-
-
   ngOnInit(): void {
-    // this.setData();
-  }
-
-  setData(){
-    const activiteit = this.apiService.getHuidigeActiviteit();
-    console.log(activiteit);
-    // this.naam = activiteit.naam;
-    // this._id = activiteit._id;
-    // this.locatie = activiteit.locatie;
-    // console.log(this.naam);
+    console.log(this.apiService.listHuidigeActiviteiten().length);
   }
 }

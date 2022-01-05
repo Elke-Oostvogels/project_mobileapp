@@ -80,11 +80,11 @@
         <p>{{totaalbedrag}}</p>
       </div>
     </ion-row>
-    <ion-button  *ngIf="networkconnection === true" expand="block" strong="true" (click)="reservatieMaken()">
-      Reserveren
-    </ion-button>
-    <ion-button  *ngIf="networkconnection === false" expand="block" strong="true" disabled="true">
-      Reserveren
-    </ion-button>
+      <ion-button *ngIf="networkservice.networkconnection === true" expand="block" strong="true" (click)="reservatieMaken()">
+        Reserveren
+      </ion-button>
+      <ion-button  *ngIf="networkservice.networkconnection === false" expand="block" strong="true" disabled="true">
+        Reserveren
+      </ion-button>
   </ion-grid>
 </ion-content>

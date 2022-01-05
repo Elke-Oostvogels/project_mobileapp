@@ -59,10 +59,8 @@ export class ApiService {
       const today = now.toISOString().substring(0,10);
 
       const eindtijd2 = new Date(new Date(today + eindtijd).getTime()-3600000);
-//    const time = this.beginTijd.toISOString().substring(10,24);
-      //new Date(date + time)
-      console.log(now);
-      console.log(eindtijd2);
+      // console.log(now);
+      // console.log(eindtijd2);
       if (now.getTime() > begintijd) {
         if (eindtijd2.getTime() > now.getTime()) {
           this.huidigeActiviteiten.push(act);

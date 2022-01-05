@@ -27,7 +27,7 @@ export class DatabaseService {
       query<Info>(this.getCollectionRef(col),
         orderBy('prijs'))
     );
-    console.log(results);
+    // console.log(results);
     return results.docs.map(d => ({...d.data(), key: d.id}));
   }
 
@@ -35,7 +35,7 @@ export class DatabaseService {
     const results = await getDocs<SafariInfo>(
       query<SafariInfo>(this.getCollectionRef(col))
     );
-    console.log(results);
+    // console.log(results);
     return results.docs.map(d => ({...d.data(), key: d.id}));
   }
 
@@ -43,7 +43,7 @@ export class DatabaseService {
     const results = await getDocs<InschrijvingSafari>(
       query<InschrijvingSafari>(this.getCollectionRef(col))
     );
-    console.log(results);
+    // console.log(results);
     return results.docs.map(d => ({...d.data(), key: d.id}));
   }
 
@@ -57,7 +57,7 @@ export class DatabaseService {
       ),
       results
     );
-    console.log(results);
+    // console.log(results);
   }
 
   async retrieveInschrijvingActiviteitRealTime(col: string, observer: ((act: InschrijvingActiviteit[]) => void)): Promise<void> {
@@ -70,14 +70,14 @@ export class DatabaseService {
       ),
       results
     );
-    console.log(results);
+    // console.log(results);
   }
 
   async retrieveInschrijvingActiviteit(col: string): Promise<{ aantalPers: number; activiteitId: string }[]> {
     const results = await getDocs<InschrijvingActiviteit>(
       query<InschrijvingActiviteit>(this.getCollectionRef(col))
     );
-    console.log(results);
+    // console.log(results);
     return results.docs.map(d => ({...d.data(), key: d.id}));
   }
 
@@ -90,7 +90,7 @@ export class DatabaseService {
     const info = await addDoc<InschrijvingSafari>(
       this.getCollectionRef<InschrijvingSafari>('InschrijvingenSafari'), inschrijvingSafari
     );
-    console.log(info);
+    // console.log(info);
   }
 
   async sendInschrijvingActiviteit(aantalpersonen: number, id: string, name: string, date: string, begintijd: string): Promise<void> {
@@ -101,11 +101,11 @@ export class DatabaseService {
       datum: date,
       beginTijd: begintijd,
     };
-    console.log(nieuweInschrijving);
+    // console.log(nieuweInschrijving);
     const info = await addDoc<InschrijvingActiviteit>(
       this.getCollectionRef<InschrijvingActiviteit>('InschrijvingenAnimatie'), nieuweInschrijving
     );
-    console.log(info);
+    // console.log(info);
   }
 
   private getCollectionRef<T>(collectionName: string): CollectionReference<T> {

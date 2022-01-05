@@ -4,6 +4,7 @@ import {Info} from '../../types/info';
 import {AlertController} from '@ionic/angular';
 import {Network} from '@capacitor/network';
 import {PluginListenerHandle} from '@capacitor/core';
+import {NetworkService} from '../services/network.service';
 
 @Component({
   selector: 'app-safari',
@@ -28,10 +29,11 @@ export class SafariPage implements OnInit {
   networkListener: PluginListenerHandle;
   networkconnection: boolean;
 
-  constructor(private dbServise: DatabaseService, private alertController: AlertController) {
+  constructor(private dbServise: DatabaseService, private alertController: AlertController
+    , public networkservice: NetworkService) {
     dbServise.retrieveInfoAsSnapshot('Info').then(i => this.algInfo = i);
     dbServise.retrieveDataInfoAsSnapshot('Data').then(i => this.dataInfo = i);
-this.networkconnection = true;
+    this.networkconnection = true;
   }
 
   prijsberekenen() {
@@ -129,37 +131,11 @@ this.networkconnection = true;
   }
 
   async ngOnInit() {
-    this.networkListener = Network.addListener('networkStatusChange', (status) => {
-      this.networkStatus = status;
-      console.log('Network status changed', status);
-      console.log(this.networkStatus.connected);
-      if (this.networkStatus.connected === false) {
-        this.networkconnection = false;
-        this.message();
-      } else {
-        this.networkconnection = true;
-      }
-    });
-  }
-
-  async message() {
-    const alert = await this.alertController.create({
-      header: 'Network fout',
-      message: 'U hebt momenteel geen netwerk verbinding, als u een reservatie wil maken zorg dat u terug netwerk verbinding hebt.',
-      buttons: [
-        {
-          text: 'Oke',
-          role: 'cancel',
-          cssClass: 'secondary'
-        }
-      ]
-    });
-    await alert.present();
+    this.networkservice.network();
   }
 
   async setdata() {
     this.bedragMin12 = this.algInfo[0].prijs;
     this.bedragPlus12 = this.algInfo[1].prijs;
   }
-
 }

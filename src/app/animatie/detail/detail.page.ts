@@ -83,10 +83,11 @@ export class DetailPage implements OnInit {
           }, {
             text: 'OK',
             handler: (data) => {
-              const aantal = data;
-              console.log(aantal);
+              this.datumAct = new Date(this.datumAct);
+              this.beginTijd = new Date(this.beginTijd);
               // eslint-disable-next-line no-underscore-dangle
-              this.dbService.sendInschrijvingActiviteit(data, this._id);
+              console.log(this.beginTijd.toDateString());
+              this.dbService.sendInschrijvingActiviteit(data.aantalPersonen, this._id, this.naam, this.datumAct.toDateString(), this.beginTijd.toString());
               this.bevestigingNotification();
             }
           }

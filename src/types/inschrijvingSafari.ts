@@ -1,5 +1,5 @@
 export interface InschrijvingSafari {
   aantalPers: number;
-  date: Date;
+  date: string;
   bedr: number;
 }

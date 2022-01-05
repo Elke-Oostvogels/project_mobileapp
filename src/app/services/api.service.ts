@@ -37,30 +37,41 @@ export class ApiService {
   listUitgelichteActiviteiten(): Activiteit<Date>[] {
     return this.uitgelichteActiviteiten;
   }
-  listHuidigeActiviteiten(): Activiteit<Date>[]{
+
+  listHuidigeActiviteiten(): Activiteit<Date>[] {
     return this.huidigeActiviteiten;
-}
+  }
+
   // getDatumViaZoekTerm(zoekterm: string): ApiResult {
   //   console.log(zoekterm);
   //   return this.getActiviteiten().find(x => x.datum.toString() === zoekterm);
   // }
 
- private async getHuidigeActiviteit(): Promise<Activiteit<Date>[]> {
+  private async getHuidigeActiviteit(): Promise<Activiteit<Date>[]> {
 
     for (const act of this.activiteitenToday.activiteiten) {
+      const now = new Date();
       // @ts-ignore
-     const begintijd = new Date().setTime(act.beginTijd);
+      const begintijd = new Date().setTime(act.beginTijd);
 
-    // @ts-ignore
-      const  eindtijd = new Date().setTime(act.eindTijd);
-      if (Date.now()> begintijd && Date.now() < eindtijd) {
-        this.huidigeActiviteiten.push(act);
+      // @ts-ignore
+      const eindtijd = act.eindTijd.toISOString().substring(10,24);
+      const today = now.toISOString().substring(0,10);
+
+      const eindtijd2 = new Date(new Date(today + eindtijd).getTime()-3600000);
+//    const time = this.beginTijd.toISOString().substring(10,24);
+      //new Date(date + time)
+      console.log(now);
+      console.log(eindtijd2);
+      if (now.getTime() > begintijd) {
+        if (eindtijd2.getTime() > now.getTime()) {
+          this.huidigeActiviteiten.push(act);
+        }
       }
     }
 
     return this.huidigeActiviteiten;
   }
-
 
 
   private async getUitgelichteActiviteiten(): Promise<Activiteit<Date>[]> {
@@ -74,9 +85,9 @@ export class ApiService {
 
   private async getApiResultToday(): Promise<void> {
     const today = new Date();
-    this.activiteitenToday = this.activiteitenToekomst.find(x => x.datum.toLocaleDateString() === today.toLocaleDateString());
-    this.getUitgelichteActiviteiten();
-    this.getHuidigeActiviteit();
+    this.activiteitenToday = await this.activiteitenToekomst.find(x => x.datum.toLocaleDateString() === today.toLocaleDateString());
+    await this.getUitgelichteActiviteiten();
+    await this.getHuidigeActiviteit();
   }
 
   private async loadData(): Promise<void> {
@@ -107,7 +118,7 @@ export class ApiService {
         this.activiteitenToekomst.push(activiteit);
       }
     }
-    this.getApiResultToday();
+    await this.getApiResultToday();
   }
 
 

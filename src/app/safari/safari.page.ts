@@ -24,12 +24,14 @@ export class SafariPage implements OnInit {
   time: number;
 
   //netwerkplugin
-  // networkStatus: any;
-  // networkListener: PluginListenerHandle;
+  networkStatus: any;
+  networkListener: PluginListenerHandle;
+  networkconnection: boolean;
 
-  constructor(private dbServise: DatabaseService , private alertController: AlertController) {
+  constructor(private dbServise: DatabaseService, private alertController: AlertController) {
     dbServise.retrieveInfoAsSnapshot('Info').then(i => this.algInfo = i);
     dbServise.retrieveDataInfoAsSnapshot('Data').then(i => this.dataInfo = i);
+this.networkconnection = true;
   }
 
   prijsberekenen() {
@@ -44,22 +46,19 @@ export class SafariPage implements OnInit {
 
   }
 
- async reservatieMaken() {
-    // this.getNetWorkStatus();
-    // this.checkNetwork();
+  async reservatieMaken() {
     let ok = await this.controleAantalPersonen(this.aantalPersMin12, this.aantalPersPlus12);
     ok += await this.controleInvoerDatum(this.datum);
     ok += await this.controleInvoerTijdstip(this.time);
-
-    if (ok === ''){
+    if (ok === '') {
       this.datum = new Date(this.datum);
       this.datum.setHours(this.time);
       this.datum.setMinutes(0);
 
-      this.dbServise.sendInschrijvingSafari(this.totaalPers, this.datum, this.totaalbedrag);
+      this.dbServise.sendInschrijvingSafari(this.totaalPers, this.datum.toDateString(), this.totaalbedrag);
       const alert = await this.alertController.create({
         header: 'Bevestiging reservatie',
-        message: 'Uw reservatie is succesvol geregistreerd, wij verwachten u ' + this.datum.toLocaleDateString()+ ' in Haven de Val',
+        message: 'Uw reservatie is succesvol geregistreerd, wij verwachten u ' + this.datum.toLocaleDateString() + ' in Haven de Val',
         buttons: [
           {
             text: 'Oke',
@@ -70,11 +69,10 @@ export class SafariPage implements OnInit {
       });
       await alert.present();
       this.totaalbedrag = 0;
-      this.aantalPersPlus12 =null;
+      this.aantalPersPlus12 = null;
       this.aantalPersMin12 = null;
       this.datum = null;
-    }
-    else{
+    } else {
       const alert = await this.alertController.create({
         header: 'Fout bij reservatie',
         message: ok,
@@ -90,74 +88,78 @@ export class SafariPage implements OnInit {
     }
   }
 
-  async controleInvoerDatum(datum: Date): Promise<string>{
-    if (datum == null){
-      return 'Gelieve een datum in te vullen.';
+  async controleInvoerDatum(datum: Date): Promise<string> {
+    if (datum == null) {
+      return 'Gelieve een datum in te vullen.</br>';
     }
     return '';
   }
 
-  async controleInvoerTijdstip(time: number): Promise<string>{
-    if (time == null){
-      return 'Gelieve een tijdstip te kiezen.';
+  async controleInvoerTijdstip(time: number): Promise<string> {
+    if (time == null) {
+      return 'Gelieve een tijdstip te kiezen.</br>';
     }
     return '';
   }
-  async controleAantalPersonen(aantalPersmin12: number, aantalPerplus12: number): Promise<string>{
-    if (aantalPerplus12 == null && aantalPersmin12 != null){
-      return 'Kinderen onder de 12 jaar moeten begeleid worden door minstens één volwassenen.';
-    } else if (aantalPersmin12 == null && aantalPerplus12 != null){
-      if (aantalPerplus12 <=6){
-        this.totaalPers = aantalPerplus12;
-      }
-      else{
-        return 'Op de boot van de scheldesafari is maar plaats voor 6 personen';
-      }
-    } else{
-      this.totaalPers = aantalPerplus12 + aantalPersmin12;
-      if (this.totaalPers > 6){
-        return 'Op de boot van de scheldesafari is maar plaats voor 6 personen';
-      }
-      else{
-        return '';
-      }
+
+  async controleAantalPersonen(aantalPersmin12: number, aantalPerplus12: number): Promise<string> {
+    switch (true) {
+      case aantalPerplus12 == null && aantalPersmin12 != null :
+        return 'Kinderen onder de 12 jaar moeten begeleid worden door minstens één volwassenen.</br>';
+        break;
+      case aantalPersmin12 == null && aantalPerplus12 != null:
+        if (aantalPerplus12 <= 6) {
+          this.totaalPers = aantalPerplus12;
+        } else {
+          return 'Op de boot van de scheldesafari is maar plaats voor 6 personen</br>';
+        }
+        break;
+      case aantalPersmin12 != null && aantalPerplus12 != null:
+        this.totaalPers = aantalPerplus12 + aantalPersmin12;
+        if (this.totaalPers > 6) {
+          return 'Op de boot van de scheldesafari is maar plaats voor 6 personen</br>';
+        } else {
+          return '';
+        }
+        break;
+      case aantalPersmin12 == null && aantalPerplus12 == null:
+        return 'Gelieve het aantal personen in te vullen!</br>';
+        break;
     }
-    return '';
   }
+
   async ngOnInit() {
-    // this.networkListener = Network.addListener('networkStatusChange', (status)=>{
-    //   this.networkStatus = status;
-    //   console.log('Network status changed', status);
-    // });
+    this.networkListener = Network.addListener('networkStatusChange', (status) => {
+      this.networkStatus = status;
+      console.log('Network status changed', status);
+      console.log(this.networkStatus.connected);
+      if (this.networkStatus.connected === false) {
+        this.networkconnection = false;
+        this.message();
+      } else {
+        this.networkconnection = true;
+      }
+    });
   }
 
-  // async getNetWorkStatus() {
-  //   this.networkStatus = await Network.getStatus();
-  //   console.log(this.networkStatus);
-  // }
-  //
-  // endNetworkListener() {
-  //   if (this.networkListener) {
-  //     this.networkListener.remove();
-  //   }
-  // }
+  async message() {
+    const alert = await this.alertController.create({
+      header: 'Network fout',
+      message: 'U hebt momenteel geen netwerk verbinding, als u een reservatie wil maken zorg dat u terug netwerk verbinding hebt.',
+      buttons: [
+        {
+          text: 'Oke',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   async setdata() {
     this.bedragMin12 = this.algInfo[0].prijs;
     this.bedragPlus12 = this.algInfo[1].prijs;
   }
-
-
- async checkNetwork(){
-  //  Network.addListener('networkStatusChange', status => {
-  //    console.log('Network status changed', status);
-  //  });
-  //
-  //
-  //  };
-  // logCurrentNetworkStatus = async () => {
-  //   const status = await Network.getStatus();
-  //
-  //   console.log('Network status:', status);
- };
 
 }

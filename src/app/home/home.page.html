@@ -58,8 +58,10 @@
 
     <h1>Niet te missen</h1>
     <div *ngIf="apiService.listUitgelichteActiviteiten().length === 0">
+      <div class="ion-margin">
       <p>Vandaag zijn er geen speciale activiteiten gepland, kijk op het animatieprogramma wat er vandaag te doen
         is.</p>
+      </div>
     </div>
     <div *ngIf="apiService.listUitgelichteActiviteiten().length >0">
       <div *ngFor="let act of apiService.listUitgelichteActiviteiten(); let i = index">

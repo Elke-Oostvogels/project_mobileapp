@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ApiResult} from '../../types/apiResult';
-import {map} from 'rxjs/operators';
+import {catchError, map, retry} from 'rxjs/operators';
 import {Activiteit} from '../../types/activiteit';
+import {of} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -51,18 +52,16 @@ export class ApiService {
 
     for (const act of this.activiteitenToday.activiteiten) {
       const now = new Date();
-      // @ts-ignore
-      const begintijd = new Date().setTime(act.beginTijd);
-
-      // @ts-ignore
-      const eindtijd = act.eindTijd.toISOString().substring(10,24);
+      const begin = act.beginTijd.toISOString().substring(10,24);
+      const einde = act.eindTijd.toISOString().substring(10,24);
       const today = now.toISOString().substring(0,10);
 
-      const eindtijd2 = new Date(new Date(today + eindtijd).getTime()-3600000);
+      const eindtijd = new Date(new Date(today + einde).getTime()-3600000);
+      const begintijd = new Date(new Date(today + begin).getTime()-3600000);
       // console.log(now);
       // console.log(eindtijd2);
-      if (now.getTime() > begintijd) {
-        if (eindtijd2.getTime() > now.getTime()) {
+      if (now.getTime() > begintijd.getTime()) {
+        if (eindtijd.getTime() > now.getTime()) {
           this.huidigeActiviteiten.push(act);
         }
       }
@@ -106,6 +105,11 @@ export class ApiService {
         map<ApiResult<string>[], ApiResult<Date>[]>(results => this.convertStringResultToDateResult(results))
       )
       .toPromise();
+    // catchError(error=>{
+    //   console.log(error);
+    //   return of(undefined);
+    // });
+    // retry(3);
   }
 
   private async filterenOpDatum(): Promise<void> {

@@ -13,6 +13,11 @@ export class NetworkService {
 
 
   constructor(private alertController: AlertController) {
+    // Ensure that the alertController has loaded the required components to show the "no longer connected" message.
+    // Without this line, the message won't be shown because the data hasn't been loaded and the browser is offline,
+    // and can therefore no longer download the required chunk.
+    // This shouldn't be required on Android/iOS as a local server is used there.
+    this.alertController.create();
   }
 
  async network(){
